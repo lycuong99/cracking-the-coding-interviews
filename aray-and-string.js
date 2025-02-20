@@ -14,8 +14,7 @@ function isPalindromPermulation(input = "") {
   let trueLength = 0;
 
   //count each char
-  for (let index = 0; index < normalizeInput.length; index++) {
-    const char = normalizeInput[index];
+  for (let char of normalizeInput) {
     if (char >= "a" && char <= "z") {
       trueLength++;
       map[char] = (map[char] || 0) + 1;
