@@ -21,20 +21,10 @@ function isPalindromPermulation(input = "") {
     }
   }
 
-  if (trueLength % 2 == 0) {
-    let isOk = Object.keys(map).filter((key) => map[key] % 2 !== 0).length === 0;
-    if (!isOk) {
-      console.log("wrong fotmat");
-      return false;
-    }
-  }
-
-  if (trueLength % 2 !== 0) {
-    let isOk = Object.keys(map).filter((key) => map[key] % 2 !== 0).length === 1;
-    if (!isOk) {
-      console.log("wrong fotmat");
-      return false;
-    }
+  let isWrong = Object.keys(map).filter((key) => map[key] % 2 !== 0).length > 1;
+  if (isWrong) {
+    console.log("wrong fotmat");
+    return false;
   }
 
   return true;
