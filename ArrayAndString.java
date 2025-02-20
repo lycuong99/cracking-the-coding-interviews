@@ -80,12 +80,48 @@ public class ArrayAndString {
 
     }
 
+    static void replaceSpaces(char[] str, int trueLength) {
+        int spaceCount = 0, index, i;
+        
+        // Đếm số lượng dấu cách trong phạm vi trueLength
+        for (i = 0; i < trueLength; i++) {
+            if (str[i] == ' ') {
+                spaceCount++;
+            }
+        }
+    
+        // Tính toán chỉ mục cuối cùng của chuỗi sau khi thay thế
+        index = trueLength + spaceCount * 2;
+        
+        // Nếu có đủ chỗ trống ở cuối, cần đặt ký tự null tại vị trí mới
+        if (trueLength < str.length) {
+            str[trueLength] = '\0';
+        }
+    
+        // Đi từ cuối về đầu để thay thế dấu cách bằng "%20"
+        for (i = trueLength - 1; i >= 0; i--) {
+            if (str[i] == ' ') {
+                str[index - 1] = '0';
+                str[index - 2] = '2';
+                str[index - 3] = '%';
+                index -= 3;
+            } else {
+                str[index - 1] = str[i];
+                index--;
+            }
+        }
+        System.out.println("urlIfy2:" + String.valueOf(str));
+    }
+    
+
     public static void main(String[] args) {
         String input = "abca";
         boolean result = isUnique(input);
         boolean result1 = checkPermulation("abac", "bcaa");
         System.out.println("isUnique" + input + result);
         System.out.println("checkPermulation" + input + result1);
-        urlIfy("Mr John Smith    ", 13);
+        urlIfy("Mr John  Smith      ", 13);
+        
+    replaceSpaces("Mr John  Smith      ".toCharArray(), 13);
     }
 }
