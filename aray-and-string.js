@@ -31,3 +31,62 @@ function isPalindromPermulation(input = "") {
 }
 
 isPalindromPermulation("tact coapapa");
+
+
+
+function checkOneOrZeroEdit(str1, str2) {
+  const del = str1.length - str2.length;
+  const isMoreThanOneEdit = del * del > 1;
+  const isEdit = str1.length == str2.length;
+  if (isMoreThanOneEdit) {
+    return false;
+  }
+
+  if (isEdit) {
+    let countEdit = 0;
+    for (let i = 0; i < str1.length; i++) {
+      if (str1[i] !== str2[i]) {
+        countEdit++;
+      }
+
+      if (countEdit > 1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  const minlength = Math.min(str1.length, str2.length);
+  const minStr = str1.length === minlength ? str1 : str2;
+  const maxStr = str1.length === minlength ? str2 : str1;
+
+  let i = 0; 
+  let j = 0;
+  let count = 0;
+  while (i < minlength && j < maxStr.length) {
+    if(count > 1) {
+      return false;
+    }
+
+    if(minStr[i] !== maxStr[j]) {
+      count++;
+      // if(minStr[i+1] === maxStr[j]) {
+      //   i++;
+      // }
+
+      // if(minStr[i] === maxStr[j+1]) {
+      //   j++;
+      // }
+
+      i++;
+    
+    }else{
+      i++;
+      j++;
+    }
+  }
+
+  return true;
+}
+
+console.log(checkOneOrZeroEdit("ale", "pale"));
