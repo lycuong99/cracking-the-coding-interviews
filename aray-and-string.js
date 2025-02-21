@@ -30,9 +30,7 @@ function isPalindromPermulation(input = "") {
   return true;
 }
 
-isPalindromPermulation("tact coapapa");
-
-
+// isPalindromPermulation("tact coapapa");
 
 function checkOneOrZeroEdit(str1, str2) {
   const del = str1.length - str2.length;
@@ -77,16 +75,135 @@ function checkOneOrZeroEdit(str1, str2) {
       // if(minStr[i] === maxStr[j+1]) {
       //   j++;
       // }
-
-      i++;
     
     }else{
       i++;
-      j++;
     }
+    j++;
   }
 
   return true;
 }
 
-console.log(checkOneOrZeroEdit("ale", "pale"));
+console.log("1",checkOneOrZeroEdit("pale", "pale"));
+
+
+function oneEditAway(first, second) {
+  // Kiểm tra độ dài, nếu chênh lệch lớn hơn 1 thì chắc chắn không thể chỉnh sửa 1 lần
+  if (Math.abs(first.length - second.length) > 1) {
+      return false;
+  }
+
+  // Xác định chuỗi ngắn hơn và dài hơn
+  let s1 = first.length < second.length ? first : second;
+  let s2 = first.length < second.length ? second : first;
+
+  let index1 = 0, index2 = 0;
+  let foundDifference = false;
+
+  while (index2 < s2.length && index1 < s1.length) {
+      if (s1[index1] !== s2[index2]) {
+          // Nếu đã tìm thấy sự khác biệt trước đó thì return false
+          if (foundDifference) {
+              return false;
+          }
+          foundDifference = true;
+
+          // Nếu độ dài bằng nhau, nghĩa là là trường hợp thay thế, nên tăng cả hai con trỏ
+          if (s1.length === s2.length) {
+              index1++;
+          }
+      } else {
+          index1++; // Nếu giống nhau, di chuyển con trỏ của chuỗi ngắn hơn
+      }
+      index2++; // Luôn di chuyển con trỏ của chuỗi dài hơn
+  }
+
+  return true;
+}
+
+// Test cases
+// console.log(oneEditAway("ale", "pale"));   // true (remove 'a')
+// console.log(oneEditAway("pales", "pale")); // true (remove 's')
+// console.log(oneEditAway("pale", "bale"));  // true (replace 'p' -> 'b')
+// console.log(oneEditAway("pale", "bake"));  // false (replace 'p' -> 'b' and 'l' -> 'k')
+// console.log(oneEditAway("pale", "palee")); // true (insert 'e')
+// console.log(oneEditAway("pale", "pa"));    // false (remove more than on
+
+function stringCompression(str) {
+  let newStr = "";
+  let count = 0;
+  for (let index = 0; index < str.length; index++) {
+   
+    const ch = str[index];
+    const isLast = index == str.length-1;
+    const isEndGroup = isLast ? false : ch != str[index + 1];
+
+    count++;
+    if(count==1){
+      newStr += ch;
+    }
+ 
+    if(isLast || isEndGroup)
+    {
+      newStr+=count;
+      count = 0;
+    }
+
+    if( newStr.length >= str.length){
+      return str;
+    }
+  }
+
+  return newStr;
+}
+
+console.log(stringCompression("aabbcc"));
+
+function rotateMatrix(maxtrix=[1,1,2,2]){
+
+  let n = 2;
+  let vectorLenth = 
+  let rotateMatrix = [];
+
+  let edgeLength = n-1;
+  const transformToXY = (j, i)=>{
+    return {
+      x: j - edgeLength/2,
+      y: i - edgeLength/2
+    }
+  }
+
+  const transformToIJ = (x,y)=>{
+   return {
+    i: y+edgeLength/2,
+    j: x+edgeLength/2
+   }
+  }
+
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+     let item = matrix[i*n+j];
+       let i1 = j;
+       let j1 = i;
+       i1 = edgeLength - i1;
+       j1 = edgeLength - j1;
+       rotateMatrix[i1*n+j1];
+    }
+  }
+
+
+}
+
+function printMatrix1D(arr, rows, cols) {
+  for (let i = 0; i < rows; i++) {
+      let row = [];
+      for (let j = 0; j < cols; j++) {
+          row.push(arr[i * cols + j]); // Tính chỉ số trong mảng 1D
+      }
+      console.log(row.join(" ")); // In hàng với tab giữa các số
+  }
+}
+
+rotateMatrix();
