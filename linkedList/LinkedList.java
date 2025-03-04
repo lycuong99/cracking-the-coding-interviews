@@ -1,3 +1,5 @@
+package linkedList;
+
 class Node<T> {
     T data;
     Node next;
@@ -66,5 +68,30 @@ public class LinkedList<T> {
             n = n.next;
         }
         return head;
+    }
+
+    public Node get(int index) {
+        Node n = head;
+        int curIndex = 0;
+        if (index == 0)
+            return n;
+        while (n.next != null) {
+           
+            if (curIndex == index) {
+                return n;
+            }
+            curIndex++;
+            n = n.next;
+        }
+        return null;
+    }
+
+    public Node last() {
+        Node n = head;
+
+        while (n.next != null) {
+            n = n.next;
+        }
+        return n;
     }
 }

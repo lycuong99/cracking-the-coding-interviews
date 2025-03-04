@@ -1,3 +1,5 @@
+package linkedList;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -5,6 +7,57 @@ import java.util.Random;
 public class LinkedListTest {
     public static void main(String[] args) {
 
+        // Get runtime instance
+        Runtime runtime = Runtime.getRuntime();
+
+        // Run garbage collector to get a cleaner memory measurement
+        runtime.gc();
+        // Get memory before function execution
+        long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
+        long startTime = System.nanoTime(); // Start time
+
+        // list.print();
+        checkLoopMain();
+
+        // Get memory after function execution
+        long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
+        long endTime = System.nanoTime(); // End time
+
+        // Print memory usage
+        System.out.println("Memory used by function: " + (memoryAfter - memoryBefore) + " bytes");
+        System.out.println("Execution time: " + (endTime - startTime) / 1_000_000.0 + " ms");
+
+    }
+
+    static void checkIntersectMain() {
+        LinkedList<Integer> listA = new LinkedList<Integer>();
+        LinkedList<Integer> listB = new LinkedList<Integer>();
+
+        listA.add(1);
+        listA.add(2);
+        listA.add(3);
+        listA.add(4);
+        listA.add(5);
+        listA.add(6);
+        listA.add(7);
+        listB.add(10);
+        listB.add(11);
+        // listB.add(13);
+        listB.last().next = listA.get(3);
+
+        listA.print();
+        listB.print();
+
+        Node intersectNode = getIntersectionNode(listA, listB);
+        if (intersectNode != null) {
+            System.out.println("intersect Node:" + intersectNode.data);
+        } else {
+            System.out.println("No intersect Node:");
+        }
+
+    }
+
+    static void checkLoopMain() {
         LinkedList<Integer> list = new LinkedList<Integer>();
 
         int size = 6;
@@ -18,38 +71,26 @@ public class LinkedListTest {
         list.add(1);
 
         list.add(2);
-        list.add(2);
-        list.add(2);
-        Node loopNode = list.add(3);
+        list.add(3);
+       
+        list.add(4);
+        Node loopNode = list.add(55);
 
-        list.add(4);
-        list.add(4);
-        list.add(4);
-        list.add(4);
-        list.add(4);
-        list.add(4);
-        list.add(5).next = loopNode;
+        list.add(6);
 
-        // Get runtime instance
-        Runtime runtime = Runtime.getRuntime();
-
-        // Run garbage collector to get a cleaner memory measurement
-        runtime.gc();
-        // Get memory before function execution
-        long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
-        long startTime = System.nanoTime(); // Start time
-
+        list.add(7);
+        list.add(8);
+        list.add(9);
+        list.add(10);
+        list.add(11);
+        list.add(12).next = loopNode;
         // list.print();
-        boolean isPalin = checkLoop(list);
-        System.out.println(isPalin);
 
-        // Get memory after function execution
-        long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
-        long endTime = System.nanoTime(); // End time
+        Node foundNodeLoop = checkLoop(list);
+        if (foundNodeLoop != null) {
+            System.out.println("foundNodeLoop:" + foundNodeLoop.data);
 
-        // Print memory usage
-        System.out.println("Memory used by function: " + (memoryAfter - memoryBefore) + " bytes");
-        System.out.println("Execution time: " + (endTime - startTime) / 1_000_000.0 + " ms");
+        }
 
     }
 
@@ -226,19 +267,21 @@ public class LinkedListTest {
 
     }
 
-    private static <T> boolean checkLoop(LinkedList<T> list) {
+    private static <T> Node checkLoop(LinkedList<T> list) {
         Node<T> fast = list.head;
         Node<T> slow = list.head;
         boolean foundLast = false;
         boolean foundLoop = false;
-        int countLoop = 0;
+
+        int countSlow = 0;
+        int fastCount = 0;
+        int loopSize = 0;
 
         Node<T> flag;
         while (slow.next != null) {
-            countLoop++;
 
             if (foundLast) {
-                break;
+                return null;
             }
 
             if (fast.next == null || fast.next.next == null) {
@@ -247,19 +290,106 @@ public class LinkedListTest {
 
             if (fast.next != null) {
                 fast = fast.next;
+                fastCount++;
             }
 
             slow = slow.next;
             fast = fast.next;
+            countSlow++;
+            fastCount++;
 
-            if (slow == fast && foundLoop == false) {
-                foundLoop = true;
+            if (slow == fast) {
+                System.out.println("FOUND LOOP AT: " + slow.data);
+                System.out.println("SLOW COUNT: " + countSlow);
+                System.out.println("fast COUNT: " + fastCount);
+                System.out.println("LOOP SIZE: " + (fastCount - countSlow));
+                loopSize = fastCount - countSlow;
                 flag = slow;
-                fast.next = list.head;
+                break;
             }
-
         }
 
-        return false;
+        if (loopSize > countSlow) {
+            int diff = loopSize - countSlow;
+            while (diff != 0) {
+                fast = fast.next;
+                diff--;
+            }
+        } else {
+            slow = list.head;
+            int diff = countSlow - loopSize;
+            while (diff != 0) {
+                slow = slow.next;
+                diff--;
+            }
+        }
+
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+
+        return slow;
+    }
+
+    private static <T> Node<T> getIntersectionNode(LinkedList<T> listA, LinkedList<T> listB) {
+        int aLength = 0, bLength = 0;
+        int minLength = 0, maxLength = 0;
+        aLength = getLengthOfLinkedList(listA);
+        bLength = getLengthOfLinkedList(listB);
+        System.out.println(aLength + "-" + bLength);
+
+        LinkedList<T> minList, maxList;
+        if (aLength > bLength) {
+            minLength = bLength;
+            maxLength = aLength;
+            minList = listB;
+            maxList = listA;
+        } else {
+            minLength = aLength;
+            maxLength = bLength;
+            minList = listA;
+            maxList = listB;
+        }
+
+        int diff = maxLength - minLength;
+
+        Node minNode = minList.head;
+        Node maxNode = maxList.head;
+        while (diff != 0) {
+            maxNode = maxNode.next;
+            diff--;
+        }
+
+        do {
+            minNode = minNode.next;
+            maxNode = maxNode.next;
+        } while (minNode != maxNode);
+
+        if (minNode == maxNode) {
+            return minNode;
+        }
+
+        return null;
+    }
+
+    private static int getLengthOfLinkedList(LinkedList list) {
+        Node curNode = list.head;
+        int count = 1;
+
+        if (curNode == null) {
+            return 0;
+        }
+
+        if (curNode.next == null) {
+            return 1;
+        }
+
+        while (curNode.next != null) {
+            count++;
+            curNode = curNode.next;
+        }
+
+        return count;
     }
 }
